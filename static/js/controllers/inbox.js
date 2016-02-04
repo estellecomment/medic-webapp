@@ -22,7 +22,7 @@ require('moment/locales');
       CheckDate($scope);
 
       Session.init();
-      DBSync();
+      DBSync.sync();
       feedback.init(
         function(doc, callback) {
           DB.get()
@@ -744,6 +744,31 @@ require('moment/locales');
         $('.filters .mobile-freetext-filter .search-pane').on('click', function(e) {
           e.stopPropagation();
         });
+
+        $scope.refreshSyncStatus = function() {
+          console.log('hello');
+          $scope.syncStatus = {};
+          $scope.syncStatus.isOnline = '...';
+          $scope.syncStatus.numChangesToSend = '...';
+          $scope.syncStatus.numChangesToFetch = '...';
+          DBSync.isOnline().then(function(status) {
+            $scope.syncStatus.isOnline = status;
+          });
+          DBSync.numChangesToFetch().then(function(num) {
+            $scope.syncStatus.numChangesToFetch = num;
+          }).catch(function(err) {
+            console.log('Could not get numChangesToFetch.', err);
+            $scope.syncStatus.numChangesToFetch = '???';
+          });
+          DBSync.numChangesToSend().then(function(num) {
+            $scope.syncStatus.numChangesToSend = num;
+          }).catch(function(err) {
+            console.log('Could not get numChangesToSend.', err);
+            $scope.syncStatus.numChangesToSend = '???';
+          });
+        };
+
+        $scope.refreshSyncStatus();
 
         $translate.onReady().then(function() {
           // we have to wait for language to respond before initing the multidropdowns
