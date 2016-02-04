@@ -34,7 +34,9 @@ describe('InboxCtrl controller', function() {
         };
       });
       $provide.factory('DBSync', function() {
-        return sinon.stub();
+        return {
+          sync : sinon.stub()
+        };
       });
       $provide.factory('Changes', function() {
         return sinon.stub();
@@ -146,7 +148,7 @@ describe('InboxCtrl controller', function() {
 
     createController();
     spyDeleteDoc.reset();
-    spyState.go.reset();    
+    spyState.go.reset();
   });
 
   afterEach(function() {});
